@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App | Dian</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2/dist/tailwind.min.css" rel="stylesheet">
+    <link 
+    rel="stylesheet" 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" 
+    referrerpolicy="no-referrer" 
+    />
+</head>
+<body>
+    <div class="max-w-sm mx-auto mt-6 p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+    <div class="search flex items-center gap-2">
+        <input 
+            type="text" 
+            class="search-bar px-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter city name"
+            spellcheck="false"
+            aria-label="Search for a city"
+        >
+        <button 
+            type="button" 
+            class="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            aria-label="Search"
+        >
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
+    <div class="weather rounded-xl p-6 w-full max-w-md mx-auto text-center">
+    <!-- Weather Icon -->
+    <img 
+        src="https://ssl.gstatic.com/onebox/weather/64/rain_light.png" 
+        alt="rain light" 
+        class="weather-icon w-24 h-24 mx-auto mb-4 drop-shadow-md"
+    >
+    
+    <!-- Temperature -->
+    <h1 class="temperature text-5xl font-bold text-gray-800 mb-1">29°C</h1>
+    
+    <!-- Location -->
+    <h2 class="city text-xl text-gray-600 mb-6">Denpasar, Bali</h2>
+    
+    <!-- Stats -->
+    <div class="details flex justify-evenly gap-4 bg-gray-50/50 rounded-lg p-4">
+        <!-- Humidity -->
+        <div class="col flex items-center gap-3">
+            <i class="fas fa-water text-2xl text-blue-500"></i>
+            <div class="text-left">
+                <p class="humidity font-bold text-gray-800">82%</p>
+                <p class="text-xs text-gray-500">Humidity</p>
+            </div>
+        </div>
+        
+        <!-- Wind -->
+        <div class="col flex items-center gap-3">
+            <i class="fas fa-wind text-2xl text-blue-400"></i>
+            <div class="text-left">
+                <p class="wind font-bold text-gray-800">14 km/h</p>
+                <p class="text-xs text-gray-500">Wind</p>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script>
+        const apiKey = 'ee003220951532c1122c9417d5b28806';
+        const apiUrl = 'https://api.openweathermap.org/data/2.5/weather?units=metric';
+
+        const searchBox = document.querySelector('.search input');
+        const searchBtn = document.querySelector('.search button');
+        const weatherIcon = document.querySelector('.weather-icon');
+        async function checkWeather(city) {
+            const response = await fetch(apiUrl + `&q=${city}&appid=${apiKey}`);
+            const data = await response.json();
+            
+            console.log(data);
+
+            document.querySelector('.temperature').innerHTML = Math.round(data.main.temp) + '°C';
+            document.querySelector('.city').innerHTML = data.name;
+            document.querySelector('.humidity').innerHTML = data.main.humidity + '%';
+            document.querySelector('.wind').innerHTML = data.wind.speed + ' km/h';
+
+            if(data.weather[0].main == 'Clouds') {
+                weatherIcon.src = 'https://cdn-icons-png.freepik.com/512/4834/4834559.png';
+            } else if(data.weather[0].main == 'Clear') {
+                weatherIcon.src = 'https://cdn-icons-png.flaticon.com/512/3262/3262946.png';
+            } else if(data.weather[0].main == 'Rain') {
+                weatherIcon.src = 'https://cdn.iconscout.com/icon/free/png-256/free-cloud-rain-icon-download-in-svg-png-gif-file-formats--rainny-forecast-weather-pack-nature-icons-3219522.png?f=webp';
+            } else if(data.weather[0].main == 'Drizzle') {
+                weatherIcon.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwpi1ItFzxHHJyCQtOg8yl2N5A9WUODc_7zw&s';
+            } else if(data.weather[0].main == 'Mist') {
+                weatherIcon.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQO8Gn2Bqdy54QvQdaJMTuidhNq9JInChrA_Q&s';
+            }
+        }
+        checkWeather("Denpasar");
+
+        searchBtn.addEventListener('click', () => {
+            if (searchBox.value.trim() === '') return;  // Skip empty searches
+            checkWeather(searchBox.value);
+        });
+
+    </script>
+    </div>
+</body>
+</html>
